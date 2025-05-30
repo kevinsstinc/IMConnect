@@ -17,9 +17,9 @@ struct ProfilePage: View {
     @State private var showEditSheet: Bool = false
     @Namespace private var animation
     @State private var isLoading = false
-
+    
     @State private var pulse = false
-
+    
     var body: some View {
         NavigationStack {
             ZStack {
@@ -33,7 +33,7 @@ struct ProfilePage: View {
                 )
                 .animation(.easeInOut(duration: 6).repeatForever(autoreverses: true), value: pulse)
                 .ignoresSafeArea()
-
+                
                 ScrollView {
                     VStack(spacing: 30) {
                         Spacer().frame(height: 40)
@@ -49,7 +49,7 @@ struct ProfilePage: View {
                                     .font(.system(size: 64, weight: .bold))
                                     .foregroundColor(Color.purple.opacity(0.8))
                             )
-
+                        
                         if isLoading {
                             loadingView()
                         } else {
@@ -59,14 +59,14 @@ struct ProfilePage: View {
                                     .foregroundColor(.white)
                                     .shadow(color: .black.opacity(0.3), radius: 2, x: 1, y: 1)
                                     .transition(.move(edge: .top).combined(with: .opacity))
-
+                                
                                 
                                 Text(role)
                                     .font(.title3)
                                     .foregroundColor(.white.opacity(0.85))
                                     .transition(.opacity)
                                 
-
+                                
                                 Text(school)
                                     .font(.title3.weight(.medium))
                                     .foregroundColor(.white.opacity(0.85))
@@ -75,7 +75,7 @@ struct ProfilePage: View {
                             .padding(.horizontal)
                             .animation(.easeOut(duration: 0.6), value: isLoading)
                         }
-
+                        
                         Button {
                             withAnimation(.spring(response: 0.4, dampingFraction: 0.6)) {
                                 showEditSheet = true
@@ -96,7 +96,7 @@ struct ProfilePage: View {
                                 )
                         }
                         .buttonStyle(ScaleButtonStyle())
-
+                        
                         Text("About")
                             .font(.title2.bold())
                             .foregroundColor(.white.opacity(0.9))
@@ -117,44 +117,16 @@ struct ProfilePage: View {
                             .padding(.leading, 20)
                         ScrollView(.horizontal, showsIndicators: false){
                             HStack{
-                                PastProject(title: "Teaching", date: "22 May")
-                                PastProject(title: "Teaching", date: "22 May")
-                                PastProject(title: "Teaching", date: "22 May")
-                                PastProject(title: "Teaching", date: "22 May")
+                                PastProject(title: "Teaching", date: "22 May", about: "Taught App creation at the School Of Science and Technology", image: "star.fill")
+                                PastProject(title: "Teaching", date: "22 May", about: "Taught App creation at the School Of Science and Technology", image: "star.fill")
+                                PastProject(title: "Teaching", date: "22 May", about: "Taught App creation at the School Of Science and Technology", image: "star.fill")
+                                PastProject(title: "Teaching", date: "22 May", about: "Taught App creation at the School Of Science and Technology", image: "star.fill")
                             }
                         }
                         RoundedRectangle(cornerRadius: 20)
                             .foregroundStyle(.white.opacity(0.1))
                             .frame(width: 370, height: 2)
-                        Text("Badges")
-                            .font(.title2.bold())
-                            .foregroundColor(.white.opacity(0.9))
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(.leading, 20)
-                        VStack{
-                            HStack{
-                                Button{
-                                    
-                                }label:{
-                                    Circle()
-                                        .frame(width: 150, height:150)
-                                        .foregroundStyle(.white.opacity(0.9))
-                                        .padding()
-                                        
-                                }
-                                Button{
-                                    
-                                }label:{
-                                    Circle()
-                                        .frame(width: 150, height:150)
-                                        .foregroundStyle(.white.opacity(0.9))
-                                        .padding()
-                                }
-                                
-                                
-                            }
-                        }
-                        Spacer()
+                        
                     }
                     .padding(.bottom, 50)
                 }
@@ -173,13 +145,13 @@ struct ProfilePage: View {
             }
         }
     }
-
+    
     func nameInitials() -> String {
         let components = name.split(separator: " ")
         let initials = components.compactMap { $0.first }.prefix(2)
         return initials.map { String($0) }.joined()
     }
-
+    
     @ViewBuilder
     func loadingView() -> some View {
         VStack(spacing: 10) {
@@ -187,86 +159,25 @@ struct ProfilePage: View {
             RoundedRectangle(cornerRadius: 8)
                 .fill(Color.gray.opacity(0.25))
                 .frame(width: 160, height: 24)
-                
-
+            
+            
             RoundedRectangle(cornerRadius: 8)
                 .fill(Color.gray.opacity(0.25))
                 .frame(width: 120, height: 18)
-                
-
+            
+            
             RoundedRectangle(cornerRadius: 8)
                 .fill(Color.gray.opacity(0.25))
                 .frame(width: 140, height: 18)
-                
+            
         }
         .padding(.top, 6)
     }
 }
 
 
-struct ScaleButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .scaleEffect(configuration.isPressed ? 0.95 : 1)
-            .animation(.spring(response: 0.3, dampingFraction: 0.6), value: configuration.isPressed)
-    }
-}
 
-struct EditProfileSheet: View {
-    @Binding var name: String
-    @Binding var role: String
-    @Binding var school: String
-    @Binding var about: String
-    @Environment(\.dismiss) var dismiss
 
-    var body: some View {
-        NavigationStack {
-            Form {
-                Section(header: Text("Identifiers")) {
-                    TextField("Name", text: $name)
-                    TextField("Role", text: $role)
-                    TextField("School", text: $school)
-                 }
-                Section(header: Text("About Yourself")) {
-                    TextField("About", text: $about)
-                }
-            }
-            .navigationTitle("Edit Profile")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Done") {
-                        dismiss()
-                    }
-                }
-            }
-        }
-    }
-}
-
-struct PastProject: View{
-    var title: String
-    var date: String
-    var body: some View{
-        VStack{
-            RoundedRectangle(cornerRadius: 20)
-                .fill(Color.white.opacity(0.3))
-                .frame(width: 150, height: 100)
-                .padding(.leading, 20)
-            Text(title)
-                .font(.title3)
-                .foregroundColor(.white.opacity(0.9))
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, 20)
-            Text(date)
-                .font(.subheadline)
-                .foregroundColor(.white.opacity(0.9))
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, 20)
-            
-        }
-    }
-}
 
 #Preview {
     ProfilePage()
