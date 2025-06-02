@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-import SwiftUI
-
 enum Tab: String, CaseIterable {
     case home, chat, profile
 }
