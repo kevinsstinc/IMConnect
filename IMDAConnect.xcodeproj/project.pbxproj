@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0A064AA62DED406B0093F502 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0A064AA02DED406B0093F502 /* Assets.xcassets */; };
+		0A064AA82DED406B0093F502 /* IMDAConnectApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A064AA32DED406B0093F502 /* IMDAConnectApp.swift */; };
 		0A3A49AC2DE9ED76003A7992 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 0A3A49AB2DE9ED76003A7992 /* FirebaseCore */; };
 		0A3A49AE2DE9ED7B003A7992 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 0A3A49AD2DE9ED7B003A7992 /* FirebaseAuth */; };
 		0A3A49B02DE9ED7F003A7992 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 0A3A49AF2DE9ED7F003A7992 /* FirebaseFirestore */; };
@@ -16,6 +18,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0A064AA02DED406B0093F502 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		0A064AA32DED406B0093F502 /* IMDAConnectApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IMDAConnectApp.swift; sourceTree = "<group>"; };
 		0A3A496F2DE81C33003A7992 /* IMDAConnect.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IMDAConnect.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -60,6 +64,8 @@
 		0A3A49662DE81C33003A7992 = {
 			isa = PBXGroup;
 			children = (
+				0A064AA02DED406B0093F502 /* Assets.xcassets */,
+				0A064AA32DED406B0093F502 /* IMDAConnectApp.swift */,
 				0A3A49712DE81C33003A7992 /* IMDAConnect */,
 				0A3A49AA2DE9ED76003A7992 /* Frameworks */,
 				0A3A49702DE81C33003A7992 /* Products */,
@@ -155,6 +161,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0A064AA62DED406B0093F502 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -165,6 +172,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0A064AA82DED406B0093F502 /* IMDAConnectApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

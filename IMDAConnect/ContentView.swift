@@ -8,9 +8,14 @@
 import SwiftUI
 
 struct ContentView: View {
-    
+    @AppStorage("isUserLoggedIn") var isUserLoggedIn = false
+    @State private var selectedTab: Tab = .profile
     var body: some View {
-        LoginView()
+        if isUserLoggedIn == true{
+            CustomTabBar(selectedTab: $selectedTab)
+        }else{
+            LoginView()
+        }
             
     }
 }
@@ -18,3 +23,5 @@ struct ContentView: View {
 #Preview {
     ContentView()
 }
+
+

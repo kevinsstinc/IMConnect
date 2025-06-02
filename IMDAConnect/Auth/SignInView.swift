@@ -1,44 +1,35 @@
 //
-//  SignUpView.swift
+//  SignInView.swift
 //  IMDAConnect
 //
-//  Created by Joseph Kevin Fredric on 31/5/25.
+//  Created by Joseph Kevin Fredric on 1/6/25.
 //
 
 import SwiftUI
 import Combine
 import FirebaseAnalytics
 
-enum FocusableField: Hashable {
-    case email
-    case password
-    case confirmPassword
-}
-
-struct SignUpView: View {
+struct SignInView: View {
     @EnvironmentObject var viewModel: AuthenticationViewModel
-    @Environment(\.dismiss) var dismiss
     @FocusState private var focus: FocusableField?
     @AppStorage("isUserLoggedIn") var isUserLoggedIn = false
     @State private var isAnimating = false
     @State private var isLoading = false
     @State private var email = ""
     @State private var password = ""
-    @State private var confirmPassword = ""
     @State private var errorMessage = ""
     
     var isValid: Bool {
-        !email.isEmpty && !password.isEmpty && password == confirmPassword
+        !email.isEmpty && !password.isEmpty
     }
     
-    private func signUpWithEmailPassword() {
+    private func loginWithEmailPassword() {
         Task {
             isLoading = true
-            if await viewModel.signUpWithEmailPassword(email: email, password: password) == true {
-                dismiss()
+            if await viewModel.signInWithEmailPassword(email: email, password: password) == true {
                 isUserLoggedIn = true
             } else {
-                errorMessage = "Error occurred. Please try again"
+                errorMessage = "Invalid credentials. Please try again."
             }
             isLoading = false
         }
@@ -59,7 +50,7 @@ struct SignUpView: View {
             
             VStack {
                 VStack(spacing: 18) {
-                    Text("Create an Account")
+                    Text("Welcome Back")
                         .font(.system(size: 28, weight: .bold))
                         .foregroundStyle(.white)
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -82,32 +73,22 @@ struct SignUpView: View {
                         focusField: .password,
                         focus: $focus
                     )
-                    .onSubmit { focus = .confirmPassword }
-                    
-                    CustomTextField(
-                        icon: "lock",
-                        placeholder: "Confirm Password",
-                        text: $confirmPassword,
-                        isSecure: true,
-                        focusField: .confirmPassword,
-                        focus: $focus
-                    )
-                    .onSubmit { signUpWithEmailPassword() }
+                    .onSubmit { loginWithEmailPassword() }
                     
                     if !errorMessage.isEmpty {
                         Text(errorMessage)
-                            .foregroundColor(.red)
+                            .foregroundStyle(.red)
                             .font(.callout)
                             .multilineTextAlignment(.center)
                     }
                     
-                    Button(action: signUpWithEmailPassword) {
+                    Button(action: loginWithEmailPassword) {
                         HStack {
                             if isLoading {
                                 ProgressView()
                                     .progressViewStyle(CircularProgressViewStyle(tint: .white))
                             } else {
-                                Text("Sign Up")
+                                Text("Log In")
                                     .font(.headline)
                                     .frame(maxWidth: .infinity)
                             }
@@ -127,66 +108,16 @@ struct SignUpView: View {
                 .cornerRadius(20)
                 .shadow(color: .white.opacity(0.1), radius: 10, x: 0, y: 6)
                 .padding()
-                HStack{
-                    Text("Already have an account? ")
-                        .foregroundStyle(.white)
-                    NavigationLink(destination: SignInView().environmentObject(AuthenticationViewModel())) {
-                            Text("Log in")
-                                .foregroundStyle(.blue)
-                                .fontWeight(.semibold)
-                        }
-                }
             }
             .frame(maxHeight: .infinity)
             .padding()
         }
         .onAppear { isAnimating = true }
-        
-    }
-    
-}
-
-struct CustomTextField: View {
-    var icon: String
-    var placeholder: String
-    @Binding var text: String
-    var isSecure: Bool
-    var focusField: FocusableField
-    var focus: FocusState<FocusableField?>.Binding
-    
-    var body: some View {
-        HStack {
-            Image(systemName: icon)
-                .foregroundStyle(.white)
-            
-            if isSecure {
-                SecureField(placeholder, text: $text)
-                    .focused(focus, equals: focusField)
-                    .textInputAutocapitalization(.never)
-                    .disableAutocorrection(true)
-            } else {
-                TextField(placeholder, text: $text)
-                    .focused(focus, equals: focusField)
-                    .textInputAutocapitalization(.never)
-                    .disableAutocorrection(true)
-            }
-        }
-        .padding()
-        .background(
-            RoundedRectangle(cornerRadius: 20)
-                .fill(Color.white.opacity(0.15))
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 20)
-                .stroke(Color.white.opacity(0.4), lineWidth: 1)
-        )
-        .foregroundStyle(.white)
     }
 }
 
 #Preview {
-    SignUpView()
+    SignInView()
         .environmentObject(AuthenticationViewModel())
 }
-
 

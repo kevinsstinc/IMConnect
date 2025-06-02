@@ -9,8 +9,6 @@ import SwiftUI
 import Combine
 import FirebaseAnalytics
 
-
-
 struct LoginView: View {
   @EnvironmentObject var viewModel: AuthenticationViewModel
   @Environment(\.colorScheme) var colorScheme
@@ -20,14 +18,6 @@ struct LoginView: View {
     @State private var isAnimating = false
     @State private var isLoading = false
   @FocusState private var focus: FocusableField?
-
-  private func signInWithEmailPassword() {
-    Task {
-      if await viewModel.signInWithEmailPassword() == true {
-        dismiss()
-      }
-    }
-  }
 
   private func signInWithGoogle() {
     Task {
@@ -58,7 +48,7 @@ struct LoginView: View {
                           .resizable()
                           .scaledToFit()
                           .frame(width: 150, height: 150)
-                          .foregroundColor(.white)
+                          .foregroundStyle(.white)
                           .shadow(radius: 15)
                           .scaleEffect(isAnimating ? 1.1 : 0.95)
                           .animation(.easeInOut(duration: 1.5).repeatForever(autoreverses: true), value: isAnimating)
@@ -66,12 +56,12 @@ struct LoginView: View {
                       Text("Welcome to IMDAConnect")
                           .multilineTextAlignment(.center)
                           .font(.largeTitle.bold())
-                          .foregroundColor(.white)
+                          .foregroundStyle(.white)
                           .transition(.opacity)
 
                       Text("Sign in with your Google account/email to continue")
                           .font(.title3)
-                          .foregroundColor(.white.opacity(0.85))
+                          .foregroundStyle(.white.opacity(0.85))
                           .padding(.horizontal, 30)
                           .multilineTextAlignment(.center)
                       if isLoading {
@@ -93,7 +83,7 @@ struct LoginView: View {
                                       
                                       Text("Sign in with Email")
                                           .fontWeight(.semibold)
-                                          .foregroundColor(.black)
+                                          .foregroundStyle(.black)
                                   }
                                   .frame(width: 250, height: 50)
                                   .background(Color.white)
@@ -146,97 +136,4 @@ struct LoginView: View {
     .environmentObject(AuthenticationViewModel())
 }
 
-//VStack {
-//  Image("Login")
-//    .resizable()
-//    .aspectRatio(contentMode: .fit)
-//    .frame(minHeight: 300, maxHeight: 400)
-//  Text("Login")
-//    .font(.largeTitle)
-//    .fontWeight(.bold)
-//    .frame(maxWidth: .infinity, alignment: .leading)
-//
-//  HStack {
-//    Image(systemName: "at")
-//    TextField("Email", text: $viewModel.email)
-//      .textInputAutocapitalization(.never)
-//      .disableAutocorrection(true)
-//      .focused($focus, equals: .email)
-//      .submitLabel(.next)
-//      .onSubmit {
-//        self.focus = .password
-//      }
-//  }
-//  .padding(.vertical, 6)
-//  .background(Divider(), alignment: .bottom)
-//  .padding(.bottom, 4)
-//
-//  HStack {
-//    Image(systemName: "lock")
-//    SecureField("Password", text: $viewModel.password)
-//      .focused($focus, equals: .password)
-//      .submitLabel(.go)
-//      .onSubmit {
-//        signInWithEmailPassword()
-//      }
-//  }
-//  .padding(.vertical, 6)
-//  .background(Divider(), alignment: .bottom)
-//  .padding(.bottom, 8)
-//
-//  if !viewModel.errorMessage.isEmpty {
-//    VStack {
-//      Text(viewModel.errorMessage)
-//        .foregroundColor(Color(UIColor.systemRed))
-//    }
-//  }
-//
-//  Button(action: signInWithEmailPassword) {
-//    if viewModel.authenticationState != .authenticating {
-//      Text("Login")
-//        .padding(.vertical, 8)
-//        .frame(maxWidth: .infinity)
-//    }
-//    else {
-//      ProgressView()
-//        .progressViewStyle(CircularProgressViewStyle(tint: .white))
-//        .padding(.vertical, 8)
-//        .frame(maxWidth: .infinity)
-//    }
-//  }
-//  .disabled(!viewModel.isValid)
-//  .frame(maxWidth: .infinity)
-//  .buttonStyle(.borderedProminent)
-//
-//  HStack {
-//    VStack { Divider() }
-//    Text("or")
-//    VStack { Divider() }
-//  }
-//
-//  Button(action: signInWithGoogle) {
-//    Text("Sign in with Google")
-//      .padding(.vertical, 8)
-//      .frame(maxWidth: .infinity)
-//      .background(alignment: .leading) {
-//        Image("Google")
-//          .frame(width: 30, alignment: .center)
-//      }
-//  }
-//  .foregroundColor(colorScheme == .dark ? .white : .black)
-//  .buttonStyle(.bordered)
-//
-//  HStack {
-//    Text("Don't have an account yet?")
-//    Button(action: { viewModel.switchFlow() }) {
-//      Text("Sign up")
-//        .fontWeight(.semibold)
-//        .foregroundColor(.blue)
-//    }
-//  }
-//  .padding([.top, .bottom], 50)
-//
-//}
-//.listStyle(.plain)
-//.padding()
-//.analyticsScreen(name: "\(Self.self)")
+

@@ -7,7 +7,7 @@
 
 
 import SwiftUI
-
+import FirebaseAuth
 
 struct ProfilePage: View {
     @AppStorage("name") var name: String = "Your Name"
@@ -17,9 +17,10 @@ struct ProfilePage: View {
     @State private var showEditSheet: Bool = false
     @Namespace private var animation
     @State private var isLoading = false
-    
+    @AppStorage("isUserLoggedIn") var isUserLoggedIn: Bool = false
     @State private var pulse = false
-    
+    @State private var userEmail: String = ""
+    @State private var showSignOutAlert = false
     var body: some View {
         NavigationStack {
             ZStack {
@@ -96,7 +97,19 @@ struct ProfilePage: View {
                                 )
                         }
                         .buttonStyle(ScaleButtonStyle())
-                        
+                        Text("Email")
+                            .font(.title2.bold())
+                            .foregroundColor(.white.opacity(0.9))
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.leading, 20)
+                        Text(userEmail)
+                            .font(.title3)
+                            .foregroundColor(.white.opacity(0.9))
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.horizontal, 20)
+                        RoundedRectangle(cornerRadius: 20)
+                            .foregroundStyle(.white.opacity(0.1))
+                            .frame(width: 370, height: 2)
                         Text("About")
                             .font(.title2.bold())
                             .foregroundColor(.white.opacity(0.9))
@@ -126,9 +139,38 @@ struct ProfilePage: View {
                         RoundedRectangle(cornerRadius: 20)
                             .foregroundStyle(.white.opacity(0.1))
                             .frame(width: 370, height: 2)
+                        Button(action: {
+                            showSignOutAlert = true
+                        }) {
+                            HStack {
+                                Image(systemName: "arrow.backward.circle.fill")
+                                    .font(.title2)
+                                    
+                                Text("Sign Out")
+                                    .font(.headline)
+                                    
+                            }
+                            .foregroundColor(.white)
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(Color.white.gradient.opacity(0.2))
+                            .cornerRadius(14)
+                            .shadow(color: .red.opacity(0.3), radius: 5, x: 0, y: 4)
+                            .padding(.horizontal)
+                            .padding(.bottom, 20)
+                        }
+                        .buttonStyle(ScaleButtonStyle())
+                        .alert("Are you sure you want to sign out?", isPresented: $showSignOutAlert) {
+                            Button("Cancel", role: .cancel) {}
+                            Button("Sign Out", role: .destructive) {
+                                try? Auth.auth().signOut()
+                                isUserLoggedIn = false
+                            }
+                        }
+                    
                         
                     }
-                    .padding(.bottom, 50)
+                    .padding(.bottom, 90)
                 }
                 .onAppear {
                     pulse = true
@@ -137,6 +179,9 @@ struct ProfilePage: View {
                         withAnimation {
                             isLoading = false
                         }
+                    }
+                    if let email = Auth.auth().currentUser?.email {
+                        userEmail = email
                     }
                 }
                 .sheet(isPresented: $showEditSheet) {

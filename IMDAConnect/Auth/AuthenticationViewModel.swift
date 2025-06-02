@@ -84,10 +84,10 @@ class AuthenticationViewModel: ObservableObject {
 }
 
 extension AuthenticationViewModel {
-  func signInWithEmailPassword() async -> Bool {
+  func signInWithEmailPassword(email: String, password: String) async -> Bool {
     authenticationState = .authenticating
     do {
-      try await Auth.auth().signIn(withEmail: self.email, password: self.password)
+      try await Auth.auth().signIn(withEmail: email, password: password)
       return true
     }
     catch  {
