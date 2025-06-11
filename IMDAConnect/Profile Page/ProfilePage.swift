@@ -4,16 +4,16 @@
 //
 //  Created by Joseph Kevin Fredric on 29/5/25.
 //
-
-
 import SwiftUI
 import FirebaseAuth
+import FirebaseFirestore
 
 struct ProfilePage: View {
     @AppStorage("name") var name: String = "Your Name"
     @AppStorage("role") var role: String = "Your Role"
     @AppStorage("school") var school: String = "Your School"
     @AppStorage("about") var about: String = "About Yourself"
+    
     @State private var showEditSheet: Bool = false
     @Namespace private var animation
     @State private var isLoading = false
@@ -21,6 +21,7 @@ struct ProfilePage: View {
     @State private var pulse = false
     @State private var userEmail: String = ""
     @State private var showSignOutAlert = false
+
     var body: some View {
         NavigationStack {
             ZStack {
@@ -34,7 +35,7 @@ struct ProfilePage: View {
                 )
                 .animation(.easeInOut(duration: 6).repeatForever(autoreverses: true), value: pulse)
                 .ignoresSafeArea()
-                
+
                 ScrollView {
                     VStack(spacing: 30) {
                         Spacer().frame(height: 40)
@@ -48,35 +49,21 @@ struct ProfilePage: View {
                             .overlay(
                                 Text(nameInitials())
                                     .font(.system(size: 64, weight: .bold))
-                                    .foregroundColor(Color.purple.opacity(0.8))
+                                    .foregroundStyle(Color.purple.opacity(0.8))
                             )
-                        
+
                         if isLoading {
                             loadingView()
                         } else {
                             VStack(spacing: 6) {
-                                Text(name)
-                                    .font(.largeTitle.bold())
-                                    .foregroundColor(.white)
-                                    .shadow(color: .black.opacity(0.3), radius: 2, x: 1, y: 1)
-                                    .transition(.move(edge: .top).combined(with: .opacity))
-                                
-                                
-                                Text(role)
-                                    .font(.title3)
-                                    .foregroundColor(.white.opacity(0.85))
-                                    .transition(.opacity)
-                                
-                                
-                                Text(school)
-                                    .font(.title3.weight(.medium))
-                                    .foregroundColor(.white.opacity(0.85))
-                                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                                Text(name).font(.largeTitle.bold()).foregroundStyle(.white).shadow(color: .black.opacity(0.3), radius: 2, x: 1, y: 1)
+                                Text(role).font(.title3).foregroundStyle(.white.opacity(0.85))
+                                Text(school).font(.title3.weight(.medium)).foregroundStyle(.white.opacity(0.85))
                             }
                             .padding(.horizontal)
                             .animation(.easeOut(duration: 0.6), value: isLoading)
                         }
-                        
+
                         Button {
                             withAnimation(.spring(response: 0.4, dampingFraction: 0.6)) {
                                 showEditSheet = true
@@ -89,7 +76,7 @@ struct ProfilePage: View {
                                     RoundedRectangle(cornerRadius: 20)
                                         .fill(Color.white.opacity(0.15))
                                 )
-                                .foregroundColor(.white)
+                                .foregroundStyle(.white)
                                 .shadow(color: .black.opacity(0.25), radius: 6, x: 0, y: 4)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 20)
@@ -97,60 +84,47 @@ struct ProfilePage: View {
                                 )
                         }
                         .buttonStyle(ScaleButtonStyle())
+
                         Text("Email")
                             .font(.title2.bold())
-                            .foregroundColor(.white.opacity(0.9))
+                            .foregroundStyle(.white.opacity(0.9))
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.leading, 20)
+
                         Text(userEmail)
                             .font(.title3)
-                            .foregroundColor(.white.opacity(0.9))
+                            .foregroundStyle(.white.opacity(0.9))
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.horizontal, 20)
+
                         RoundedRectangle(cornerRadius: 20)
                             .foregroundStyle(.white.opacity(0.1))
                             .frame(width: 370, height: 2)
+
                         Text("About")
                             .font(.title2.bold())
-                            .foregroundColor(.white.opacity(0.9))
+                            .foregroundStyle(.white.opacity(0.9))
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.leading, 20)
+
                         Text(about)
                             .font(.title3)
-                            .foregroundColor(.white.opacity(0.9))
+                            .foregroundStyle(.white.opacity(0.9))
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.horizontal, 20)
+
                         RoundedRectangle(cornerRadius: 20)
                             .foregroundStyle(.white.opacity(0.1))
                             .frame(width: 370, height: 2)
-                        Text("Past Projects")
-                            .font(.title2.bold())
-                            .foregroundColor(.white.opacity(0.9))
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(.leading, 20)
-                        ScrollView(.horizontal, showsIndicators: false){
-                            HStack{
-                                PastProject(title: "Teaching", date: "22 May", about: "Taught App creation at the School Of Science and Technology", image: "star.fill")
-                                PastProject(title: "Teaching", date: "22 May", about: "Taught App creation at the School Of Science and Technology", image: "star.fill")
-                                PastProject(title: "Teaching", date: "22 May", about: "Taught App creation at the School Of Science and Technology", image: "star.fill")
-                                PastProject(title: "Teaching", date: "22 May", about: "Taught App creation at the School Of Science and Technology", image: "star.fill")
-                            }
-                        }
-                        RoundedRectangle(cornerRadius: 20)
-                            .foregroundStyle(.white.opacity(0.1))
-                            .frame(width: 370, height: 2)
+
                         Button(action: {
                             showSignOutAlert = true
                         }) {
                             HStack {
-                                Image(systemName: "arrow.backward.circle.fill")
-                                    .font(.title2)
-                                    
-                                Text("Sign Out")
-                                    .font(.headline)
-                                    
+                                Image(systemName: "arrow.backward.circle.fill").font(.title2)
+                                Text("Sign Out").font(.headline)
                             }
-                            .foregroundColor(.white)
+                            .foregroundStyle(.white)
                             .padding()
                             .frame(maxWidth: .infinity)
                             .background(Color.white.gradient.opacity(0.2))
@@ -167,8 +141,6 @@ struct ProfilePage: View {
                                 isUserLoggedIn = false
                             }
                         }
-                    
-                        
                     }
                     .padding(.bottom, 90)
                 }
@@ -176,51 +148,79 @@ struct ProfilePage: View {
                     pulse = true
                     isLoading = true
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                        withAnimation {
-                            isLoading = false
-                        }
+                        withAnimation { isLoading = false }
                     }
                     if let email = Auth.auth().currentUser?.email {
                         userEmail = email
                     }
+                    loadUserProfile()
                 }
-                .sheet(isPresented: $showEditSheet) {
+                .sheet(isPresented: $showEditSheet, onDismiss: {
+                    saveUserProfile()
+                }) {
                     EditProfileSheet(name: $name, role: $role, school: $school, about: $about)
                 }
             }
         }
     }
-    
+
     func nameInitials() -> String {
         let components = name.split(separator: " ")
         let initials = components.compactMap { $0.first }.prefix(2)
         return initials.map { String($0) }.joined()
     }
-    
+
     @ViewBuilder
     func loadingView() -> some View {
         VStack(spacing: 10) {
-            
             RoundedRectangle(cornerRadius: 8)
                 .fill(Color.gray.opacity(0.25))
                 .frame(width: 160, height: 24)
-            
-            
             RoundedRectangle(cornerRadius: 8)
                 .fill(Color.gray.opacity(0.25))
                 .frame(width: 120, height: 18)
-            
-            
             RoundedRectangle(cornerRadius: 8)
                 .fill(Color.gray.opacity(0.25))
                 .frame(width: 140, height: 18)
-            
         }
         .padding(.top, 6)
     }
+
+    func saveUserProfile() {
+        guard let user = Auth.auth().currentUser else { return }
+        let db = Firestore.firestore()
+        let data: [String: Any] = [
+            "name": name,
+            "role": role,
+            "school": school,
+            "about": about,
+            "email": user.email ?? ""
+        ]
+        db.collection("users").document(user.uid).setData(data) { error in
+            if let error = error {
+                print("Error saving profile: \(error.localizedDescription)")
+            } else {
+                print("Profile saved to Firestore.")
+            }
+        }
+    }
+
+    func loadUserProfile() {
+        guard let user = Auth.auth().currentUser else { return }
+        let db = Firestore.firestore()
+        db.collection("users").document(user.uid).getDocument { document, error in
+            if let document = document, document.exists {
+                let data = document.data()
+                name = data?["name"] as? String ?? name
+                role = data?["role"] as? String ?? role
+                school = data?["school"] as? String ?? school
+                about = data?["about"] as? String ?? about
+            } else {
+                print("No profile found, using defaults.")
+            }
+        }
+    }
 }
-
-
-#Preview {
+#Preview{
     ProfilePage()
 }

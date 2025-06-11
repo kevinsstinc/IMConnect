@@ -8,7 +8,7 @@
 import SwiftUI
 
 enum Tab: String, CaseIterable {
-    case home, chat, profile
+    case home, chat, community, profile
 }
 
 struct TabItem: Identifiable {
@@ -20,8 +20,11 @@ struct TabItem: Identifiable {
 let tabItems: [TabItem] = [
     TabItem(tab: .home, iconName: "house.fill"),
     TabItem(tab: .chat, iconName: "bubble.left.and.bubble.right.fill"),
-    TabItem(tab: .profile, iconName: "person.crop.circle.fill")
+    TabItem(tab: .community, iconName: "person.3.fill"),
+    
+    TabItem(tab: .profile, iconName: "person.crop.circle.fill"),
 ]
+
 
 struct CustomTabBar: View {
     @Binding var selectedTab: Tab
@@ -78,12 +81,16 @@ struct TabBarContainer: View {
             Group {
                 switch selectedTab {
                 case .home:
-                   HomeView()
+                    HomeView()
                 case .chat:
-                   ChatView()
+                    ChatView()
+                case .community:
+                    CommunityProjectsView()
                 case .profile:
                     ProfilePage()
                 }
+                
+                
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .ignoresSafeArea()
@@ -95,11 +102,15 @@ struct TabBarContainer: View {
         }
     }
 }
+struct CommunityProjectsView: View{
+    var body: some View{
+        Text("community projcts")
+    }
+}
 struct HomeView: View{
     var body: some View{
-        Text("Home")
+        Text("Home view")
     }
-    
 }
 struct ChatView: View{
     var body: some View{

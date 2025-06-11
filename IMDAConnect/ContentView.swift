@@ -9,10 +9,9 @@ import SwiftUI
 
 struct ContentView: View {
     @AppStorage("isUserLoggedIn") var isUserLoggedIn = false
-    @State private var selectedTab: Tab = .profile
     var body: some View {
         if isUserLoggedIn == true{
-            CustomTabBar(selectedTab: $selectedTab)
+            TabBarContainer()
         }else{
             LoginView()
         }
