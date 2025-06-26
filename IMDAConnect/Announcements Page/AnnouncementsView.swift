@@ -36,24 +36,25 @@ class AnnouncementsManager: ObservableObject {
 
 
 struct AnnouncementsView: View {
+    @StateObject private var userManager = UserManager()
     @StateObject private var manager = AnnouncementsManager()
     @State private var selectedTag: String? = nil
     @State private var searchText: String = ""
     @State private var pulse = false
     @State private var showCreator = false
-
+    
     var allTags: [String] {
         let tags = manager.announcements.flatMap { $0.tags }
         return Array(Set(tags)).sorted()
     }
-
+    
     var filteredAnnouncements: [Announcement] {
         manager.announcements.filter {
             (selectedTag == nil || $0.tags.contains(selectedTag!)) &&
             (searchText.isEmpty || $0.title.localizedCaseInsensitiveContains(searchText) || $0.content.localizedCaseInsensitiveContains(searchText))
         }
     }
-
+    
     var body: some View {
         NavigationStack {
             ZStack {
@@ -67,31 +68,33 @@ struct AnnouncementsView: View {
                 )
                 .animation(.easeInOut(duration: 6).repeatForever(autoreverses: true), value: pulse)
                 .ignoresSafeArea()
-
+                
+                
                 ScrollView {
                     VStack(alignment: .leading, spacing: 28) {
                         HStack {
                             Text("Announcements")
-                                .font(.system(size: 40, weight: .bold))
+                                .font(.system(size: 35, weight: .bold))
                                 .foregroundStyle(.white)
                             Spacer()
-                            Button {
-                                showCreator = true
-                            } label: {
-                                Image(systemName: "plus")
-                                    .font(.title)
-                                    .foregroundColor(.white)
-                            }
-                            .sheet(isPresented: $showCreator) {
-                                AnnouncementCreatorSheet(manager: manager)
+                            if userManager.isAdmin {
+                                Button(action: { showCreator = true }) {
+                                    Image(systemName: "plus.circle.fill")
+                                        .font(.system(size: 32))
+                                        .foregroundColor(.white)
+                                }
+                                .sheet(isPresented: $showCreator) {
+                                    AnnouncementCreatorSheet(manager: manager)
+                                }
+
                             }
                         }
                         .padding(.horizontal, 28)
                         .padding(.top, 32)
-
+                        
                         SearchBar(searchText: $searchText)
                             .padding(.horizontal, 28)
-
+                        
                         if !allTags.isEmpty {
                             ScrollView(.horizontal, showsIndicators: false) {
                                 HStack(spacing: 12) {
@@ -112,7 +115,7 @@ struct AnnouncementsView: View {
                                 .padding(.horizontal, 28)
                             }
                         }
-
+                        
                         VStack(alignment: .leading, spacing: 18) {
                             ForEach(filteredAnnouncements) { ann in
                                 NavigationLink(destination: AnnouncementDetailView(announcement: ann)) {
@@ -124,7 +127,10 @@ struct AnnouncementsView: View {
                         .padding(.bottom, 40)
                     }
                 }
-                .onAppear { pulse = true }
+                .onAppear {
+                    pulse = true
+                    userManager.fetchCurrentUserAdminStatus()
+                }
             }
         }
     }

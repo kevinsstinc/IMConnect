@@ -9,18 +9,18 @@ import FirebaseAuth
 import FirebaseFirestore
 
 struct ProfilePage: View {
-    @AppStorage("name") var name: String = "Your Name"
-    @AppStorage("role") var role: String = "Your Role"
-    @AppStorage("school") var school: String = "Your School"
-    @AppStorage("about") var about: String = "About Yourself"
-    
+    @State private var name: String = "Anonymous User"
+    @State private var role: String = "Your Role"
+    @State private var school: String = "Your School"
+    @State private var about: String = "Hey there! I am a user of IMConnect!"
+
     @State private var showEditSheet: Bool = false
     @Namespace private var animation
     @State private var isLoading = false
-    @AppStorage("isUserLoggedIn") var isUserLoggedIn: Bool = false
     @State private var pulse = false
     @State private var userEmail: String = ""
     @State private var showSignOutAlert = false
+    @AppStorage("isUserLoggedIn") var isUserLoggedIn: Bool = false
 
     var body: some View {
         NavigationStack {
@@ -61,27 +61,18 @@ struct ProfilePage: View {
                                 Text(school).font(.title3.weight(.medium)).foregroundStyle(.white.opacity(0.85))
                             }
                             .padding(.horizontal)
-                            .animation(.easeOut(duration: 0.6), value: isLoading)
                         }
 
                         Button {
-                            withAnimation(.spring(response: 0.4, dampingFraction: 0.6)) {
-                                showEditSheet = true
-                            }
+                            showEditSheet = true
                         } label: {
                             Text("Edit Profile")
                                 .fontWeight(.semibold)
                                 .frame(width: 340, height: 45)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 20)
-                                        .fill(Color.white.opacity(0.15))
-                                )
+                                .background(RoundedRectangle(cornerRadius: 20).fill(Color.white.opacity(0.15)))
                                 .foregroundStyle(.white)
                                 .shadow(color: .black.opacity(0.25), radius: 6, x: 0, y: 4)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 20)
-                                        .stroke(Color.white.opacity(0.3), lineWidth: 1)
-                                )
+                                .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.white.opacity(0.3), lineWidth: 1))
                         }
                         .buttonStyle(ScaleButtonStyle())
 
@@ -97,9 +88,7 @@ struct ProfilePage: View {
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.horizontal, 20)
 
-                        RoundedRectangle(cornerRadius: 20)
-                            .foregroundStyle(.white.opacity(0.1))
-                            .frame(width: 370, height: 2)
+                        DividerLine()
 
                         Text("About")
                             .font(.title2.bold())
@@ -113,9 +102,7 @@ struct ProfilePage: View {
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.horizontal, 20)
 
-                        RoundedRectangle(cornerRadius: 20)
-                            .foregroundStyle(.white.opacity(0.1))
-                            .frame(width: 370, height: 2)
+                        DividerLine()
 
                         Button(action: {
                             showSignOutAlert = true
@@ -211,16 +198,24 @@ struct ProfilePage: View {
         db.collection("users").document(user.uid).getDocument { document, error in
             if let document = document, document.exists {
                 let data = document.data()
-                name = data?["name"] as? String ?? name
-                role = data?["role"] as? String ?? role
-                school = data?["school"] as? String ?? school
-                about = data?["about"] as? String ?? about
+                name = data?["name"] as? String ?? ""
+                role = data?["role"] as? String ?? ""
+                school = data?["school"] as? String ?? ""
+                about = data?["about"] as? String ?? ""
             } else {
-                print("No profile found, using defaults.")
+                print("No profile found, using blank values.")
             }
         }
     }
+
+    @ViewBuilder
+    func DividerLine() -> some View {
+        RoundedRectangle(cornerRadius: 20)
+            .foregroundStyle(.white.opacity(0.1))
+            .frame(width: 370, height: 2)
+    }
 }
-#Preview{
+
+#Preview {
     ProfilePage()
 }

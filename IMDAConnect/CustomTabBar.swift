@@ -2,14 +2,22 @@
 //  CustomTabBar.swift
 //  IMDAConnect
 //
-//  Created by Joseph Kevin Fredric on 2/6/25.
+//  Created by Joseph Kevin FredImage(systemName: "cloud.drizzle.circle")ric on 2/6/25.
 //
 
 import SwiftUI
 
 enum Tab: String, CaseIterable {
-    case home, chat, community, profile
+    case home, posts, announcements, profile
 }
+
+let tabItems: [TabItem] = [
+    TabItem(tab: .home, iconName: "house.fill"),
+    
+    TabItem(tab: .posts, iconName: "square.and.pencil"),
+    TabItem(tab: .announcements, iconName: "megaphone.fill"),
+    TabItem(tab: .profile, iconName: "person.crop.circle.fill"),
+]
 
 struct TabItem: Identifiable {
     let id = UUID()
@@ -17,13 +25,6 @@ struct TabItem: Identifiable {
     let iconName: String
 }
 
-let tabItems: [TabItem] = [
-    TabItem(tab: .home, iconName: "house.fill"),
-    TabItem(tab: .chat, iconName: "bubble.left.and.bubble.right.fill"),
-    TabItem(tab: .community, iconName: "person.3.fill"),
-    
-    TabItem(tab: .profile, iconName: "person.crop.circle.fill"),
-]
 
 
 struct CustomTabBar: View {
@@ -74,20 +75,20 @@ struct CustomTabBar: View {
 }
 
 struct TabBarContainer: View {
-    @State private var selectedTab: Tab = .chat
+    @State private var selectedTab: Tab = .profile
     
     var body: some View {
         ZStack {
             Group {
                 switch selectedTab {
-                case .home:
-                    HomeView()
-                case .chat:
-                    ChatView()
-                case .community:
-                    CommunityProjectsView()
-                case .profile:
-                    ProfilePage()
+                    case .home:
+                        HomeView()
+                    case .posts:
+                        PostsView()
+                    case .announcements:
+                        AnnouncementsView()
+                    case .profile:
+                        ProfilePage()
                 }
                 
                 
@@ -102,22 +103,13 @@ struct TabBarContainer: View {
         }
     }
 }
-struct CommunityProjectsView: View{
-    var body: some View{
-        Text("community projcts")
-    }
-}
+
 struct HomeView: View{
     var body: some View{
         Text("Home view")
     }
 }
-struct ChatView: View{
-    var body: some View{
-        Text("Chat")
-    }
-    
-}
+
 #Preview {
     TabBarContainer()
 }
