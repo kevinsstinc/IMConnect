@@ -9,7 +9,7 @@ import SwiftUI
 struct AnnouncementCreatorSheet: View {
     @ObservedObject var manager: AnnouncementsManager
     @Environment(\.dismiss) var dismiss
-    
+
     @State private var title = ""
     @State private var content = ""
     @State private var author = ""
@@ -17,7 +17,8 @@ struct AnnouncementCreatorSheet: View {
     @State private var pdfURL = ""
     @State private var pulse = false
     @Environment(\.colorScheme) var colorScheme
-    
+
+
     var body: some View {
         ZStack {
             LinearGradient(
@@ -30,20 +31,20 @@ struct AnnouncementCreatorSheet: View {
             )
             .animation(.easeInOut(duration: 6).repeatForever(autoreverses: true), value: pulse)
             .ignoresSafeArea()
-            
+
             ScrollView {
                 VStack(spacing: 24) {
                     Text("New Announcement")
                         .font(.largeTitle.bold())
                         .foregroundColor(.white)
                         .padding(.top, 20)
-                    
+
                     CreateInputCard(title: "Title", text: $title, placeholder: "Enter announcement title")
                     CreateInputCard(title: "Content", text: $content, placeholder: "Enter announcement content", multiline: true)
                     CreateInputCard(title: "Author", text: $author, placeholder: "Enter author name")
                     CreateInputCard(title: "Tags (comma separated)", text: $tagsText, placeholder: "e.g. urgent, info")
                     CreateInputCard(title: "PDF URL (optional)", text: $pdfURL, placeholder: "Paste PDF link here")
-                    
+
                     Button(action: {
                         let tags = tagsText.split(separator: ",").map { $0.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() }
                         let newAnnouncement = Announcement(
@@ -56,6 +57,7 @@ struct AnnouncementCreatorSheet: View {
                         )
                         do {
                             _ = try manager.db.collection("announcements").addDocument(from: newAnnouncement)
+                            
                         } catch {
                             print("Error saving announcement: \(error)")
                         }

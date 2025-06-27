@@ -8,21 +8,28 @@ import SwiftUI
 
 struct AnnouncementCard: View {
     let announcement: Announcement
+    var isPinned: Bool = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
+                if isPinned {
+                    Image(systemName: "pin.fill")
+                        .foregroundColor(.white)
+                }
                 Text(announcement.title)
                     .font(.title2.bold())
-                    .foregroundColor(.white)
+                    .foregroundStyle(.white)
+                    .multilineTextAlignment(.leading)
                 Spacer()
                 Text(announcement.date, style: .date)
                     .font(.caption)
-                    .foregroundColor(.white.opacity(0.7))
+                    .foregroundStyle(.white.opacity(0.7))
             }
             Text(announcement.content)
                 .font(.body)
-                .foregroundColor(.white.opacity(0.85))
+                .foregroundStyle(.white.opacity(0.85))
+                .multilineTextAlignment(.leading)
                 .lineLimit(2)
             HStack {
                 ForEach(announcement.tags, id: \.self) { tag in
@@ -31,13 +38,13 @@ struct AnnouncementCard: View {
                         .padding(.horizontal, 8)
                         .padding(.vertical, 4)
                         .background(Color.white.opacity(0.15))
-                        .foregroundColor(.white.opacity(0.9))
+                        .foregroundStyle(.white.opacity(0.9))
                         .cornerRadius(8)
                 }
                 Spacer()
                 Text("By \(announcement.author)")
                     .font(.caption)
-                    .foregroundColor(.white.opacity(0.5))
+                    .foregroundStyle(.white.opacity(0.5))
             }
         }
         .padding(24)

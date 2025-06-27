@@ -4,6 +4,7 @@
 //
 //  Created by Joseph Kevin Fredric on 13/6/25.
 //
+
 import SwiftUI
 import FirebaseFirestore
 
@@ -38,6 +39,7 @@ class AnnouncementsManager: ObservableObject {
 struct AnnouncementsView: View {
     @StateObject private var userManager = UserManager()
     @StateObject private var manager = AnnouncementsManager()
+    @StateObject private var pinsManager = UserPinsManager()
     @State private var selectedTag: String? = nil
     @State private var searchText: String = ""
     @State private var pulse = false
@@ -49,10 +51,19 @@ struct AnnouncementsView: View {
     }
     
     var filteredAnnouncements: [Announcement] {
-        manager.announcements.filter {
-            (selectedTag == nil || $0.tags.contains(selectedTag!)) &&
-            (searchText.isEmpty || $0.title.localizedCaseInsensitiveContains(searchText) || $0.content.localizedCaseInsensitiveContains(searchText))
-        }
+        manager.announcements
+            .filter {
+                (selectedTag == nil || $0.tags.contains(selectedTag!)) &&
+                (searchText.isEmpty || $0.title.localizedCaseInsensitiveContains(searchText) || $0.content.localizedCaseInsensitiveContains(searchText))
+            }
+            .sorted {
+                let pin0 = pinsManager.isPinned($0.id)
+                let pin1 = pinsManager.isPinned($1.id)
+                if pin0 == pin1 {
+                    return $0.date > $1.date
+                }
+                return pin0 && !pin1
+            }
     }
     
     var body: some View {
@@ -68,7 +79,6 @@ struct AnnouncementsView: View {
                 )
                 .animation(.easeInOut(duration: 6).repeatForever(autoreverses: true), value: pulse)
                 .ignoresSafeArea()
-                
                 
                 ScrollView {
                     VStack(alignment: .leading, spacing: 28) {
@@ -86,7 +96,6 @@ struct AnnouncementsView: View {
                                 .sheet(isPresented: $showCreator) {
                                     AnnouncementCreatorSheet(manager: manager)
                                 }
-
                             }
                         }
                         .padding(.horizontal, 28)
@@ -119,7 +128,20 @@ struct AnnouncementsView: View {
                         VStack(alignment: .leading, spacing: 18) {
                             ForEach(filteredAnnouncements) { ann in
                                 NavigationLink(destination: AnnouncementDetailView(announcement: ann)) {
-                                    AnnouncementCard(announcement: ann)
+                                    AnnouncementCard(
+                                        announcement: ann,
+                                        isPinned: pinsManager.isPinned(ann.id)
+                                    )
+                                    .contextMenu {
+                                        Button {
+                                            pinsManager.togglePin(ann.id)
+                                        } label: {
+                                            Label(
+                                                pinsManager.isPinned(ann.id) ? "Unpin" : "Pin",
+                                                systemImage: pinsManager.isPinned(ann.id) ? "pin.slash" : "pin"
+                                            )
+                                        }
+                                    }
                                 }
                             }
                         }

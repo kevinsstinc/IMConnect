@@ -8,6 +8,7 @@
 import SwiftUI
 import FirebaseCore
 import GoogleSignIn
+import UserNotifications
 
 class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication,
@@ -25,9 +26,10 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 }
 
 @main
-struct YourApp: App {
+struct IMDAConnectApp: App {
     @StateObject private var viewModel = AuthenticationViewModel()
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+
     
     
     var body: some Scene {
