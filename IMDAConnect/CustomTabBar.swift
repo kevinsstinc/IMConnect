@@ -104,12 +104,6 @@ struct TabBarContainer: View {
     }
 }
 
-struct HomeView: View{
-    var body: some View{
-        Text("Home view")
-    }
-}
-
 #Preview {
     TabBarContainer()
 }
