@@ -53,7 +53,7 @@ struct LoginView: View {
                     .scaleEffect(isAnimating ? 1.1 : 0.95)
                     .animation(.easeInOut(duration: 1.5).repeatForever(autoreverses: true), value: isAnimating)
                 
-                Text("Welcome to IMDAConnect")
+                Text("Welcome to \nIMConnect")
                     .multilineTextAlignment(.center)
                     .font(.largeTitle.bold())
                     .foregroundStyle(.white)
@@ -106,7 +106,7 @@ struct LoginView: View {
                             Image("google_icon")
                                 .resizable()
                                 .frame(width: 24, height: 24)
-                            
+                                .padding(.trailing, 20)
                             Text("Sign in with Google")
                                 .fontWeight(.semibold)
                                 .foregroundColor(.black)
@@ -135,5 +135,6 @@ struct LoginView: View {
     LoginView()
         .environmentObject(AuthenticationViewModel())
 }
+
 
 

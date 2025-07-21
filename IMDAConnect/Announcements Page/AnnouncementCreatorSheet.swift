@@ -36,7 +36,7 @@ struct AnnouncementCreatorSheet: View {
                 VStack(spacing: 24) {
                     Text("New Announcement")
                         .font(.largeTitle.bold())
-                        .foregroundColor(.white)
+                        .foregroundStyle(.white)
                         .padding(.top, 20)
 
                     CreateInputCard(title: "Title", text: $title, placeholder: "Enter announcement title")
@@ -65,7 +65,7 @@ struct AnnouncementCreatorSheet: View {
                     }) {
                         Text("Create Announcement")
                             .font(.headline)
-                            .foregroundColor(.white)
+                            .foregroundStyle(.white)
                             .padding()
                             .frame(maxWidth: .infinity)
                             .background(Color.white.gradient.opacity(0.2))

@@ -1,14 +1,17 @@
 //
-//  ProfilePage.swift
+//  AuthorProfilePage.swift
 //  IMDAConnect
 //
-//  Created by Joseph Kevin Fredric on 29/5/25.
+//  Created by Joseph Kevin Fredric on 19/7/25.
 //
+
 import SwiftUI
 import FirebaseAuth
 import FirebaseFirestore
 
-struct ProfilePage: View {
+struct AuthorProfilePage: View {
+    let userUID: String
+
     @State private var name: String = "Anonymous User"
     @State private var role: String = "Your Role"
     @State private var school: String = "Your School"
@@ -63,19 +66,6 @@ struct ProfilePage: View {
                             .padding(.horizontal)
                         }
 
-                        Button {
-                            showEditSheet = true
-                        } label: {
-                            Text("Edit Profile")
-                                .fontWeight(.semibold)
-                                .frame(width: 340, height: 45)
-                                .background(RoundedRectangle(cornerRadius: 20).fill(Color.white.opacity(0.15)))
-                                .foregroundStyle(.white)
-                                .shadow(color: .black.opacity(0.25), radius: 6, x: 0, y: 4)
-                                .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.white.opacity(0.3), lineWidth: 1))
-                        }
-                        .buttonStyle(ScaleButtonStyle())
-
                         Text("Email")
                             .font(.title2.bold())
                             .foregroundStyle(.white.opacity(0.9))
@@ -101,38 +91,27 @@ struct ProfilePage: View {
                             .foregroundStyle(.white.opacity(0.9))
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.horizontal, 20)
+//                        Button(action: {
+//                            startChat(with: userUID)
+//                        }) {
+//                            HStack {
+//                                Image(systemName: "bubble.left.and.bubble.right.fill")
+//                                    .font(.title2)
+//                                Text("Message")
+//                                    .font(.headline)
+//                            }
+//                            .foregroundStyle(.white)
+//                            .padding()
+//                            .frame(maxWidth: .infinity)
+//                            .background(Color.white.opacity(0.2))
+//                            .cornerRadius(14)
+//                            .shadow(color: .purple.opacity(0.3), radius: 5, x: 0, y: 4)
+//                            .padding(.horizontal)
+//                            .padding(.bottom, 10)
+//                        }
+//                        .buttonStyle(ScaleButtonStyle())
 
-                        DividerLine()
 
-                        Button(action: {
-                            showSignOutAlert = true
-                        }) {
-                            HStack {
-                                Image(systemName: "arrow.backward.circle.fill").font(.title2)
-                                Text(isSigningOut ? "Signing out..." : "Sign Out").font(.headline) 
-                            }
-                            .foregroundStyle(.white)
-                            .padding()
-                            .frame(maxWidth: .infinity)
-                            .background(isSigningOut ? Color.gray.opacity(0.4) : Color.white.opacity(0.2))
-                            .cornerRadius(14)
-                            .shadow(color: .red.opacity(0.3), radius: 5, x: 0, y: 4)
-                            .padding(.horizontal)
-                            .padding(.bottom, 20)
-                        }
-                        .disabled(isSigningOut)
-                        .buttonStyle(ScaleButtonStyle())
-                        .alert("Are you sure you want to sign out?", isPresented: $showSignOutAlert) {
-                            Button("Cancel", role: .cancel) {}
-
-                            Button("Sign Out", role: .destructive) {
-                                isSigningOut = true
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                                    try? Auth.auth().signOut()
-                                    isUserLoggedIn = false
-                                }
-                            }
-                        }
 
                     }
                     .padding(.bottom, 90)
@@ -143,18 +122,34 @@ struct ProfilePage: View {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                         withAnimation { isLoading = false }
                     }
-                    if let email = Auth.auth().currentUser?.email {
-                        userEmail = email
-                    }
                     loadUserProfile()
-                }
-                .sheet(isPresented: $showEditSheet, onDismiss: {
-                    saveUserProfile()
-                }) {
-                    EditProfileSheet(name: $name, role: $role, school: $school, about: $about)
                 }
             }
         }
+    }
+    
+
+    func sendFriendRequest(to targetUID: String) {
+        guard let currentUID = Auth.auth().currentUser?.uid,
+              let currentUser = Auth.auth().currentUser else { return }
+        let db = Firestore.firestore()
+
+        db.collection("friendRequests")
+            .document(targetUID)
+            .collection("requests")
+            .document(currentUID)
+            .setData([
+                "senderID": currentUID,
+                "senderName": currentUser.displayName ?? "Unknown",
+                "senderEmail": currentUser.email ?? "",
+                "timestamp": FieldValue.serverTimestamp()
+            ]) { error in
+                if let error = error {
+                    print("❌ Failed to send friend request: \(error.localizedDescription)")
+                } else {
+                    print("✅ Friend request sent to \(targetUID)")
+                }
+            }
     }
 
     func nameInitials() -> String {
@@ -179,37 +174,18 @@ struct ProfilePage: View {
         .padding(.top, 6)
     }
 
-    func saveUserProfile() {
-        guard let user = Auth.auth().currentUser else { return }
-        let db = Firestore.firestore()
-        let data: [String: Any] = [
-            "name": name,
-            "role": role,
-            "school": school,
-            "about": about,
-            "email": user.email ?? ""
-        ]
-        db.collection("users").document(user.uid).setData(data) { error in
-            if let error = error {
-                print("Error saving profile: \(error.localizedDescription)")
-            } else {
-                print("Profile saved to Firestore.")
-            }
-        }
-    }
-
     func loadUserProfile() {
-        guard let user = Auth.auth().currentUser else { return }
         let db = Firestore.firestore()
-        db.collection("users").document(user.uid).getDocument { document, error in
+        db.collection("users").document(userUID).getDocument { document, error in
             if let document = document, document.exists {
                 let data = document.data()
                 name = data?["name"] as? String ?? ""
                 role = data?["role"] as? String ?? ""
                 school = data?["school"] as? String ?? ""
                 about = data?["about"] as? String ?? ""
+                userEmail = data?["email"] as? String ?? ""
             } else {
-                print("No profile found, using blank values.")
+                print("⚠️ No profile found for userUID: \(userUID)")
             }
         }
     }
@@ -221,8 +197,3 @@ struct ProfilePage: View {
             .frame(width: 370, height: 2)
     }
 }
-
-#Preview {
-    ProfilePage()
-}
-

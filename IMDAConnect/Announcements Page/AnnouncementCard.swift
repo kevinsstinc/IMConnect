@@ -15,7 +15,7 @@ struct AnnouncementCard: View {
             HStack {
                 if isPinned {
                     Image(systemName: "pin.fill")
-                        .foregroundColor(.white)
+                        .foregroundStyle(.white)
                 }
                 Text(announcement.title)
                     .font(.title2.bold())

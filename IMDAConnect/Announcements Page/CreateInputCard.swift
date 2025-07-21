@@ -16,12 +16,12 @@ struct CreateInputCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text(title)
-                .foregroundColor(.white.opacity(0.8))
+                .foregroundStyle(.white.opacity(0.8))
                 .font(.subheadline.weight(.medium))
             ZStack(alignment: .topLeading) {
                 if text.isEmpty {
                     Text(placeholder)
-                        .foregroundColor(.white.opacity(0.3))
+                        .foregroundStyle(.white.opacity(0.3))
                         .padding(14)
                 }
                 if multiline {
@@ -29,14 +29,14 @@ struct CreateInputCard: View {
                         .frame(minHeight: 100)
                         .padding(12)
                         .background(Color.white.opacity(0.1).cornerRadius(12))
-                        .foregroundColor(.white)
+                        .foregroundStyle(.white)
                         .scrollContentBackground(.hidden)
                         .disabled(!editable)
                 } else {
                     TextField("", text: $text)
                         .padding(12)
                         .background(Color.white.opacity(0.1).cornerRadius(12))
-                        .foregroundColor(.white)
+                        .foregroundStyle(.white)
                         .disabled(!editable)
                 }
             }

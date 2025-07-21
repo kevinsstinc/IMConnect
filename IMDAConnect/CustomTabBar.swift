@@ -2,19 +2,32 @@
 //  CustomTabBar.swift
 //  IMDAConnect
 //
-//  Created by Joseph Kevin FredImage(systemName: "cloud.drizzle.circle")ric on 2/6/25.
+//  Created by Joseph Kevin Fredric on 2/6/25.
 //
 
 import SwiftUI
+import FirebaseAuth
 
 enum Tab: String, CaseIterable {
-    case home, posts, announcements, profile
+    case home, posts, idea, announcements, profile
+
+    var displayName: String {
+        switch self {
+        case .home: return "Home"
+        case .posts: return "Posts"
+        case .idea: return "Idea Incubator"
+        case .announcements: return "Announcements"
+        case .profile: return "Profile"
+        }
+    }
 }
+
 
 let tabItems: [TabItem] = [
     TabItem(tab: .home, iconName: "house.fill"),
     
-    TabItem(tab: .posts, iconName: "square.and.pencil"),
+    TabItem(tab: .posts, iconName: "message.fill"),
+    TabItem(tab: .idea, iconName: "lightbulb.fill"),
     TabItem(tab: .announcements, iconName: "megaphone.fill"),
     TabItem(tab: .profile, iconName: "person.crop.circle.fill"),
 ]
@@ -58,6 +71,7 @@ struct CustomTabBar: View {
                     }
                     .frame(maxWidth: .infinity)
                 }
+                .accessibilityLabel(item.tab.displayName)
             }
         }
         .padding(.horizontal, 24)
@@ -69,14 +83,12 @@ struct CustomTabBar: View {
                 .background(.ultraThinMaterial)
         )
         .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
-        .shadow(color: Color.white.opacity(0.3), radius: 10, x: 0, y: 10)
         .padding(.horizontal)
     }
 }
 
 struct TabBarContainer: View {
     @State private var selectedTab: Tab = .profile
-    
     var body: some View {
         ZStack {
             Group {
@@ -85,16 +97,22 @@ struct TabBarContainer: View {
                         HomeView()
                     case .posts:
                         PostsView()
+                    case .idea:
+                        IdeaIncubatorView()
                     case .announcements:
                         AnnouncementsView()
                     case .profile:
                         ProfilePage()
+                    @unknown default:
+                        EmptyView()
                 }
                 
                 
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .ignoresSafeArea()
+            
+            
             
             VStack {
                 Spacer()
@@ -107,6 +125,7 @@ struct TabBarContainer: View {
 #Preview {
     TabBarContainer()
 }
+
 
 
 

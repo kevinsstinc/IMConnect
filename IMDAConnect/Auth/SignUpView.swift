@@ -96,7 +96,7 @@ struct SignUpView: View {
                     
                     if !errorMessage.isEmpty {
                         Text(errorMessage)
-                            .foregroundColor(.red)
+                            .foregroundStyle(.red)
                             .font(.callout)
                             .multilineTextAlignment(.center)
                     }

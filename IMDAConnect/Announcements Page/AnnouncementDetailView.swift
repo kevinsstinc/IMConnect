@@ -36,9 +36,9 @@ struct AnnouncementDetailView: View {
                             .padding(4)
                         HStack(spacing: 10) {
                             Image(systemName: "calendar")
-                                .foregroundColor(.white.opacity(0.8))
+                                .foregroundStyle(.white.opacity(0.8))
                             Text(announcement.date, style: .date)
-                                .foregroundColor(.white.opacity(0.8))
+                                .foregroundStyle(.white.opacity(0.8))
                         }
 
                     }
@@ -52,9 +52,9 @@ struct AnnouncementDetailView: View {
                         Text("Announcement Details")
                             .font(.headline)
                             .padding(.bottom, 4)
-                            .foregroundColor(.white.opacity(0.9))
+                            .foregroundStyle(.white.opacity(0.9))
                         Text(announcement.content)
-                            .foregroundColor(.white.opacity(0.85))
+                            .foregroundStyle(.white.opacity(0.85))
                             .font(.body)
                     }
                     .padding()
@@ -67,19 +67,19 @@ struct AnnouncementDetailView: View {
                         VStack(alignment: .leading, spacing: 12) {
                             Text("Attached Document")
                                 .font(.headline)
-                                .foregroundColor(.white.opacity(0.9))
+                                .foregroundStyle(.white.opacity(0.9))
 
                             Link(destination: documentURL) {
                                 HStack {
                                     Image(systemName: "doc.text")
-                                        .foregroundColor(.white)
+                                        .foregroundStyle(.white)
                                         .imageScale(.large)
                                     Text("Open Document")
-                                        .foregroundColor(.white)
+                                        .foregroundStyle(.white)
                                         .fontWeight(.medium)
                                     Spacer()
                                     Image(systemName: "arrow.up.right")
-                                        .foregroundColor(.white.opacity(0.7))
+                                        .foregroundStyle(.white.opacity(0.7))
                                 }
                                 .padding()
                                 .background(Color.white.opacity(0.1))

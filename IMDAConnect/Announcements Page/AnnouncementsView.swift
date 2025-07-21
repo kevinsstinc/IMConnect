@@ -91,7 +91,7 @@ struct AnnouncementsView: View {
                                 Button(action: { showCreator = true }) {
                                     Image(systemName: "plus.circle.fill")
                                         .font(.system(size: 32))
-                                        .foregroundColor(.white)
+                                        .foregroundStyle(.white)
                                 }
                                 .sheet(isPresented: $showCreator) {
                                     AnnouncementCreatorSheet(manager: manager)
@@ -112,7 +112,7 @@ struct AnnouncementsView: View {
                                             .padding(.horizontal, 16)
                                             .padding(.vertical, 10)
                                             .background(selectedTag == tag ? Color.purple.opacity(0.6) : Color.white.opacity(0.1))
-                                            .foregroundColor(.white)
+                                            .foregroundStyle(.white)
                                             .cornerRadius(14)
                                             .onTapGesture {
                                                 withAnimation {
@@ -147,6 +147,7 @@ struct AnnouncementsView: View {
                         }
                         .padding(.horizontal, 28)
                         .padding(.bottom, 40)
+                        .padding(.bottom, 100)
                     }
                 }
                 .onAppear {
