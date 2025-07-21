@@ -293,7 +293,7 @@ struct SinglePostView: View {
         components.host = "commentanalyzer.googleapis.com"
         components.path = "/v1alpha1/comments:analyze"
         components.queryItems = [
-            URLQueryItem(name: "key", value: "AIzaSyDmflTTpBTSiba-67-jmmfVq_LgoTo4KmQ")
+            URLQueryItem(name: "key", value: "API_KEY_HERE")
         ]
         
         guard let url = components.url else {
