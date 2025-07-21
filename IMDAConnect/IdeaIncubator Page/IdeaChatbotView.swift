@@ -245,7 +245,7 @@ func callMistralAPI(prompt: String) async -> String? {
     var request = URLRequest(url: url)
     request.httpMethod = "POST"
     request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-    request.setValue("Bearer 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", forHTTPHeaderField: "Authorization")
+    request.setValue("Bearer mistral_api_key", forHTTPHeaderField: "Authorization")
 
     do {
         request.httpBody = try JSONSerialization.data(withJSONObject: payload)
